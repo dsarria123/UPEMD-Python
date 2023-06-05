@@ -61,11 +61,11 @@
 
 """
 
+import Osc_10s_char
 
-pt_cell = {'ca02a_LD'; #Name of file without '.txt'
-    'ca02a_HUT';
-    'C21af4_LD';
-    'C21af4_HUT'}
+pt_cell = ['ca02a_LD','ca02a_HUT','C21af4_LD','C21af4_HUT']
+
+    #Name of file without '.txt'
 
 ALL_WRITE = 0; #Set to 1 if you want all parts of file to create .txt files
 #to save work
