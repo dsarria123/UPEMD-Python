@@ -47,7 +47,7 @@
 %
 % Dependencies:
 % -SetnIMF-
-% NOTE: "SetnIMF" calls "upemd" which calls "emd" 
+% "SetnIMF" calls "upemd" which calls "emd" 
 % Input: Data
 % Output: IMF components that are below a certain frequency, in our case below ~0.47 Hz  
 % Dependencies:
@@ -78,11 +78,19 @@
 
 """
 
+import SetnIMF
+import target_component_IMF
+import upemd
+import nFA
+import gauss_fit_mean_std
+import Calc_M_h
 
 
-function [M_h,a_hr,a_sbp] = Osc_10s_char(Matrix_of_t_hr_sbp,figureson)
-%This function takes in patient data and returns metrics: M_h (phase
+function M_h,a_hr,a_sbp = Osc_10s_char(Matrix_of_t_hr_sbp,figureson)
+
+"""This function takes in patient data and returns metrics: M_h (phase
 %response), amplitude of 0.1Hz HR and SBP signals
+"""
 
 t = Matrix_of_t_hr_sbp(:,1);
 hr = Matrix_of_t_hr_sbp(:,2);

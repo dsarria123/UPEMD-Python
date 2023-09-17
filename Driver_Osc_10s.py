@@ -57,29 +57,29 @@
 
 % In this file, we will use 2 data sets (1 POTS 1 Control) to illustrate
 % how to use our method.
-
-
 """
 
+import numpy as np
+import pandas as pd
 import Osc_10s_char
+import Data_pre_proc
 
-pt_cell = ['ca02a_LD','ca02a_HUT','C21af4_LD','C21af4_HUT']
+pt_cell = ['ca02a_LD','ca02a_HUT','C21af4_LD','C21af4_HUT'] #files without CSV
 
-    #Name of file without '.txt'
-
+ 
 ALL_WRITE = 0; #Set to 1 if you want all parts of file to create .txt files
 #to save work
 
 """
-%% Step 1 - Preprocessing data
-%Data may come from different sources, but the function "Osc_10s_char.m"
-%requires a matrix containing 3 columns of data: time (s), heart rate
-%(bpm), and systolic blood pressure (mmHg) 
-%This function does not take in scaling for cuff measurements
+Step 1 - Preprocessing data
+Data may come from different sources, but the function "Osc_10s_char.m"
+requires a matrix containing 3 columns of data: time (s), heart rate
+(bpm), and systolic blood pressure (mmHg) 
+This function does not take in scaling for cuff measurements
 
-%If data are in the form of time(s), ECG(V),BP(mmHg) and sampled at 1000
-%Hz the following may be useful. If the data is already in deseried form 
-%([t,hr,sbp]) feel free to proceed to the next section.
+If data are in the form of time(s), ECG(V),BP(mmHg) and sampled at 1000
+Hz the following may be useful. If the data is already in deseried form 
+([t,hr,sbp]) feel free to proceed to the next section.
 """
 
 
@@ -88,27 +88,24 @@ write_file = 0
 
 pkprom = 25; #25 is default, increase or decrease in accordence to fitting
 #systolic line over the top of BP (figureson)
-for i in pt_cell.length:# :length(pt_cell)
-    data = load(strcat(pt_cell{i},'.txt'))
-    PreppedData = Data_pre_proc(data,pkprom,figureson)
+for filename in pt_cell.length:# :length(pt_cell)
+    data = pd.read.csv(filename + '.csv').values
+    PreppedData = Data_pre_proc(data,pkprom,figureson) #NEED TO CHANGE DATA PRE PROCESSING INTO PYTHON
     
     if write_file == 1 or ALL_WRITE == 1:
-       dlmwrite(strcat(pt_cell{i},'_P.txt'),PreppedData,'precision',10)
-   end
-end
-
+       np.savetxt(filename + '_P.csv', PreppedData,delimiter = ',', fmt='%0.10f')
+   
 
 
 """
-%% Step 2 - Running UPEMD Analysis
-% The function Osc_10s_char takes in patient data ([t,hr,sbp]) and 
-% returns metrics: M_h (phase response),amplitude of 0.1Hz HR and 
-% SBP signals using UPEMD and procedures outlined in the above paper.
+Step 2 - Running UPEMD Analysis
+The function Osc_10s_char takes in patient data ([t,hr,sbp]) and 
+returns metrics: M_h (phase response),amplitude of 0.1Hz HR and 
+SBP signals using UPEMD and procedures outlined in the above paper.
 """
 
 
 figureson = 1
-for i in pt_cell.length: #:length(pt_cell)
-     dat = load(strcat(pt_cell{i},'_P.txt')); %Load in data saved above
-    [M_h,a_hr,a_sbp] = Osc_10s_char(dat,figureson); 
-end
+for filename in pt_cell:
+     data = pd.read_csv(filename + '_P.csv').values #Load in data saved above
+     M_h,a_hr,a_sbp = Osc_10s_char(data,figureson); #NEED TO CHANGE OSC_10s_CHAR INTO PYTHON
